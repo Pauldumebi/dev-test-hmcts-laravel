@@ -33,10 +33,10 @@ Start the Laravel application server using the following command:
     php artisan serve
 ```
 
-This will start the server, and by default, it will be accessible at ```http://127.0.0.1:8000```. You can now access your Laravel backend locally ![Sample Result](/images/runningApplication.png).
+This will start the server, and by default, it will be accessible at ```http://127.0.0.1:8000```. You can now access your Laravel backend locally ![Sample Result](images/runningApplication.png).
 
 ## Running Test Cases
-Use the following command to run test cases: ![Sample Result](/images/testCases.png)
+Use the following command to run test cases: ![Sample Result](images/testCases.png)
 
 ```json
     php artisan test --filter TaskControllerTest
@@ -229,8 +229,8 @@ Use the following command to run test cases: ![Sample Result](/images/testCases.
 ```
 
 ### Sample Images of Routes:
-create - ![Sample Result](/images/createTask.png)
-Get task by id - ![Sample Result](/images/getSingleTask.png)
-Get all tasks - ![Sample Result](/images/getAllTask.png)
-Update task by status - ![Sample Result](/images/updateTaskByStatus.png)
-Delete - ![Sample Result](/images/deleteTask.png)
+create - ![Sample Result](images/createTask.png)
+Get task by id - ![Sample Result](images/getSingleTask.png)
+Get all tasks - ![Sample Result](images/getAllTask.png)
+Update task by status - ![Sample Result](images/updateTaskByStatus.png)
+Delete - ![Sample Result](images/deleteTask.png)

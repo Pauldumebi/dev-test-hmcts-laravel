@@ -1,61 +1,185 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Task Management API Documentation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Base URL
 
-## About Laravel
+```http://127.0.0.1:8000/api```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Endpoints
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. **Create a New Task**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**URL:** `/tasks`  
+**Method:** `POST`  
+**Description:** Creates a new task.
+**Status code:** 201
 
-## Learning Laravel
+#### Sample URL:
+```http://127.0.0.1:8000/api/tasks```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### Sample Request:
+```json
+{
+    "title": "Task Title",
+    "description": "Task description (optional)",
+    "status": "pending",
+    "due_date": "2025/05/01"
+}
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+#### Sample Response:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```json
+{
+    "id": 1,
+    "title": "Complete report",
+    "description": "Finish the monthly report",
+    "status": "pending",
+    "due_date": "2025-05-01T12:00:00",
+    "created_at": "2025-04-27T00:00:00",
+    "updated_at": "2025-04-27T00:00:00"
+}
+```
 
-## Laravel Sponsors
+### Error Response (Validation Failed):
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```json
+{
+    "message": "Validation failed",
+    "errors": {
+        "title": ["The title field is required."]
+    },
+    "missing_fields": ["title"]
+}
+```
 
-### Premium Partners
+### 2. **Get Task by ID**
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+**URL:** `/tasks/{id}`  
+**Method:** `GET`  
+**Description:** Retrieves a task by its ID.
+**Status code:** 200
 
-## Contributing
+#### Sample URL:
+```http://127.0.0.1:8000/api/tasks/1```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Sample Response:
 
-## Code of Conduct
+```json
+{
+    "id": 1,
+    "title": "Complete report",
+    "description": "Finish the monthly report",
+    "status": "pending",
+    "due_date": "2025-05-01T12:00:00",
+    "created_at": "2025-04-27T00:00:00",
+    "updated_at": "2025-04-27T00:00:00"
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Error Response (Validation Failed):
 
-## Security Vulnerabilities
+```json
+{
+   "error": "Task not found"
+}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. **Get All Task**
 
-## License
+**URL:** `/tasks/{id}`  
+**Method:** `GET`  
+**Description:** Retrieves a task by its ID.
+**Status code:** 200
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Sample URL:
+```http://127.0.0.1:8000/api/tasks```
+
+#### Sample Response:
+
+```json
+[
+    {
+        "id": 1,
+        "title": "Complete report",
+        "description": "Finish the monthly report",
+        "status": "pending",
+        "due_date": "2025-05-01T12:00:00",
+        "created_at": "2025-04-27T00:00:00",
+        "updated_at": "2025-04-27T00:00:00"
+    },
+    {
+        "id": 2,
+        "title": "Prepare presentation",
+        "description": "Prepare slides for the team meeting",
+        "status": "in progress",
+        "due_date": "2025-05-02T09:00:00",
+        "created_at": "2025-04-27T00:00:00",
+        "updated_at": "2025-04-27T00:00:00"
+    }
+]
+```
+
+### Error Response (Validation Failed):
+
+```json
+{
+   "error": "Task not found"
+}
+```
+
+### 4. **Update Task Status by ID**
+
+**URL:** `/tasks/{id}/status`  
+**Method:** `PATCH`  
+**Description:** Updates the status of an existing task.
+**Status code:** 200
+
+#### Sample URL:
+```http://127.0.0.1:8000/api/tasks/1/status```
+
+#### Sample Request:
+```json
+{
+    "status": "completed"
+}
+```
+
+#### Sample Response:
+
+```json
+{
+    "id": 1,
+    "title": "Complete report",
+    "description": "Finish the monthly report",
+    "status": "completed",
+    "due_date": "2025-05-01T12:00:00",
+    "created_at": "2025-04-27T00:00:00",
+    "updated_at": "2025-04-27T00:00:00"
+}
+```
+
+### 5. **Delete a Task by ID**
+
+**URL:** `/tasks/{id}`  
+**Method:** `DELETE`  
+**Description:** Deletes an existing task by its ID
+**Status code:** 204
+
+#### Sample URL:
+```http://127.0.0.1:8000/api/tasks/1```
+
+#### Sample Response:
+
+```json
+{
+   "message": "Task deleted successfully"
+}
+```
+
+### Error Response (Validation Failed):
+
+```json
+{
+   "error": "Task not found"
+}
+```

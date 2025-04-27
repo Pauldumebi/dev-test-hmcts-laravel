@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
+    /**
+     * Store a newly created task.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -29,16 +36,26 @@ class TaskController extends Controller
             ], 400);
         }
 
+        // Convert the due_date to a Carbon instance before saving
+        $dueDate = Carbon::parse($request->due_date);
+
         $task = Task::create([
             'title' => $request->title,
             'description' => $request->description,
             'status' => $request->status ?? 'pending',
-            'due_date' => $request->due_date,
+            'due_date' => $dueDate,
         ]);
 
         return response()->json($task, 201);
     }
 
+
+    /**
+     * Display specified task by id.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id)
     {
         try 
@@ -52,12 +69,25 @@ class TaskController extends Controller
         }
     }
 
+
+    /**
+     * List all tasks.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         $tasks = Task::all();
         return response()->json($tasks);
     }
 
+    /**
+     * Update the status of a task by id.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateStatus(Request $request, $id)
     {
         $task = Task::findOrFail($id);
@@ -67,6 +97,13 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
+
+    /**
+     * Delete a task by id.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy($id)
     {
         try 

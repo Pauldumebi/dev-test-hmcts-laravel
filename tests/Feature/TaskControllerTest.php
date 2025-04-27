@@ -17,10 +17,10 @@ class TaskControllerTest extends TestCase
             'title' => 'New Task',
             'description' => 'Task description',
             'status' => 'pending',
-            'due_date' => '2025-05-01 12:00:00',
+            'due_date' => '05/01/2025',
         ];
 
-        $response = $this->postJson('/tasks', $data);
+        $response = $this->postJson('/api/tasks', $data);
 
         $response->assertStatus(201)
                  ->assertJson([

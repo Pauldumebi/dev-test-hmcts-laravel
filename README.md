@@ -36,7 +36,7 @@ Start the Laravel application server using the following command:
 This will start the server, and by default, it will be accessible at ```http://127.0.0.1:8000```. You can now access your Laravel backend locally ![Sample Result](/hmcts/public/images/runningApplication.png).
 
 ## Running Test Cases
-Use the following command to run test cases: ![Sample Result](/public/images/testCases.png)
+Use the following command to run test cases: ![Sample Result](/images/testCases.png)
 
 ```json
     php artisan test --filter TaskControllerTest

@@ -1,10 +1,47 @@
 # Task Management API Documentation
 
+## Install Dependencies
+Run the following command to install the necessary dependencies using Composer:
+
+```json
+    composer install
+```
+This will install all the required PHP packages and libraries needed to run the Laravel application.
+
+## Set Up Environment Configuration
+copy the .env.example file and rename it to .env:
+
+```json
+    cp .env.example .env
+```
+
+Open the .env file and configure database to be sqlite (This comes default check it is sqlite).
+
+
+## Run Migrations
+If your application uses a database, you may need to run the migrations to set up your database schema:
+
+```json
+    php artisan migrate
+```
+This will set up the required tables.
+
+## Serve the Application
+Start the Laravel application server using the following command:
+
+```json
+    php artisan serve
+```
+
+This will start the server, and by default, it will be accessible at ```http://127.0.0.1:8000```. You can now access your Laravel backend locally.
+
+
+## Endpoints
+
 ## Base URL
 
 ```http://127.0.0.1:8000/api```
 
-## Endpoints
 
 ### 1. **Create a New Task**
 

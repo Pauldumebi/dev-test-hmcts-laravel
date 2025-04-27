@@ -4,17 +4,30 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Task;
+use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'description' => 'nullable|string',
             'status' => 'required|string',
             'due_date' => 'required|date',
         ]);
+
+        if ($validator->fails()) 
+        {
+            $errors = $validator->errors();
+            $missingFields = $errors->keys();
+            
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $errors,
+                'missing_fields' => $missingFields
+            ], 400);
+        }
 
         $task = Task::create([
             'title' => $request->title,
@@ -56,9 +69,17 @@ class TaskController extends Controller
 
     public function destroy($id)
     {
-        $task = Task::findOrFail($id);
-        $task->delete();
-
-        return response()->json(null, 204);
+        try 
+        {
+            $task = Task::findOrFail($id);
+            $task->delete();
+    
+            return response()->json(null, 204);
+        } 
+        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) 
+        {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+       
     }
 }

@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
-    /**
-     * Store a newly created task.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -49,13 +43,6 @@ class TaskController extends Controller
         return response()->json($task, 201);
     }
 
-
-    /**
-     * Display specified task by id.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function show($id)
     {
         try 
@@ -69,27 +56,26 @@ class TaskController extends Controller
         }
     }
 
-
-    /**
-     * List all tasks.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function index()
     {
         $tasks = Task::all();
         return response()->json($tasks);
     }
 
-    /**
-     * Update the status of a task by id.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function updateStatus(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|string', // Status should not be empty
+        ]);
+
+        if ($validator->fails()) 
+        {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
         $task = Task::findOrFail($id);
         $task->status = $request->status;
         $task->save();
@@ -97,13 +83,6 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
-
-    /**
-     * Delete a task by id.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy($id)
     {
         try 

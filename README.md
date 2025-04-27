@@ -33,7 +33,14 @@ Start the Laravel application server using the following command:
     php artisan serve
 ```
 
-This will start the server, and by default, it will be accessible at ```http://127.0.0.1:8000```. You can now access your Laravel backend locally.
+This will start the server, and by default, it will be accessible at ```http://127.0.0.1:8000```. You can now access your Laravel backend locally ![Sample Result](/hmcts/public/images/runningApplication.png).
+
+## Running Test Cases
+Use the following command to run test cases: ![Sample Result](/hmcts/public/images/testCases.png)
+
+```json
+    php artisan test --filter TaskControllerTest
+```
 
 
 ## Endpoints
@@ -220,3 +227,10 @@ This will start the server, and by default, it will be accessible at ```http://1
    "error": "Task not found"
 }
 ```
+
+### Sample Images of Routes:
+create - ![Sample Result](/hmcts/public/images/createTask.png)
+Get task by id - ![Sample Result](/hmcts/public/images/getSingleTask.png)
+Get all tasks - ![Sample Result](/hmcts/public/images/getAllTask.png)
+Update task by status - ![Sample Result](/hmcts/public/images/updateTaskByStatus.png)
+Delete - ![Sample Result](/hmcts/public/images/deleteTask.png)

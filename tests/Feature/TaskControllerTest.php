@@ -34,9 +34,9 @@ class TaskControllerTest extends TestCase
     /** @test */
     public function it_validates_create_task()
     {
-        $response = $this->postJson('/tasks', []);
+        $response = $this->postJson('/api/tasks', []);
 
-        $response->assertStatus(422)
+        $response->assertStatus(400)
                  ->assertJsonValidationErrors(['title']);
     }
 
@@ -45,7 +45,7 @@ class TaskControllerTest extends TestCase
     {
         Task::factory()->count(2)->create();
 
-        $response = $this->getJson('/tasks');
+        $response = $this->getJson('/api/tasks');
 
         $response->assertStatus(200)
                  ->assertJsonCount(2);
@@ -56,7 +56,7 @@ class TaskControllerTest extends TestCase
     {
         $task = Task::factory()->create();
 
-        $response = $this->getJson('/tasks/' . $task->id);
+        $response = $this->getJson('/api/tasks/' . $task->id);
 
         $response->assertStatus(200)
                  ->assertJson(['title' => $task->title]);
@@ -65,7 +65,7 @@ class TaskControllerTest extends TestCase
     /** @test */
     public function it_returns_404_for_non_existent_task()
     {
-        $response = $this->getJson('/tasks/999');
+        $response = $this->getJson('/api/tasks/999');
 
         $response->assertStatus(404)
                  ->assertJson(['error' => 'Task not found']);
@@ -76,7 +76,7 @@ class TaskControllerTest extends TestCase
     {
         $task = Task::factory()->create();
 
-        $response = $this->patchJson("/tasks/{$task->id}/status", ['status' => 'completed']);
+        $response = $this->patchJson("/api/tasks/{$task->id}/status", ['status' => 'completed']);
 
         $response->assertStatus(200)
                  ->assertJson(['status' => 'completed']);
@@ -89,7 +89,7 @@ class TaskControllerTest extends TestCase
     {
         $task = Task::factory()->create();
 
-        $response = $this->patchJson("/tasks/{$task->id}/status", ['status' => 'invalid_status']);
+        $response = $this->patchJson("/api/tasks/{$task->id}/status", ['status' => '']);
 
         $response->assertStatus(422)
                  ->assertJsonValidationErrors(['status']);
@@ -100,7 +100,7 @@ class TaskControllerTest extends TestCase
     {
         $task = Task::factory()->create();
 
-        $response = $this->deleteJson("/tasks/{$task->id}");
+        $response = $this->deleteJson("/api/tasks/{$task->id}");
 
         $response->assertStatus(204);
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);

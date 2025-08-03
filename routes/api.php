@@ -11,4 +11,5 @@ Route::get('/check', function (Request $request) {
 
 Route::resource('tasks', TaskController::class);
 Route::patch('/tasks/{id}/status', [TaskController::class, 'updateStatus']);
+Route::get('/statuses', [TaskController::class, 'getStatuses']);
 

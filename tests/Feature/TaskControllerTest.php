@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Status;
 use App\Models\Task;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -10,37 +11,43 @@ class TaskControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(\Database\Seeders\StatusSeeder::class);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_creates_a_task()
     {
         $data = [
             'title' => 'New Task',
             'description' => 'Task description',
-            'status' => 'pending',
-            'due_date' => '05/01/2025',
+            'status_id' => 1,
+            'due_date' => now()->addDays(5)->format('j/n/Y')
         ];
 
         $response = $this->postJson('/api/tasks', $data);
 
         $response->assertStatus(201)
-                 ->assertJson([
-                     'title' => 'New Task',
-                     'status' => 'pending',
-                 ]);
+                    ->assertJson([
+                        'title' => 'New Task',
+                        'status_id' => 1,
+                    ]);
 
         $this->assertDatabaseHas('tasks', ['title' => 'New Task']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_validates_create_task()
     {
         $response = $this->postJson('/api/tasks', []);
 
-        $response->assertStatus(400)
-                 ->assertJsonValidationErrors(['title']);
+        $response->assertStatus(422)
+                    ->assertJsonValidationErrors(['title']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_retrieves_all_tasks()
     {
         Task::factory()->count(2)->create();
@@ -48,10 +55,10 @@ class TaskControllerTest extends TestCase
         $response = $this->getJson('/api/tasks');
 
         $response->assertStatus(200)
-                 ->assertJsonCount(2);
+                    ->assertJsonCount(2);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_retrieves_a_task_by_id()
     {
         $task = Task::factory()->create();
@@ -59,43 +66,44 @@ class TaskControllerTest extends TestCase
         $response = $this->getJson('/api/tasks/' . $task->id);
 
         $response->assertStatus(200)
-                 ->assertJson(['title' => $task->title]);
+                    ->assertJson(['title' => $task->title]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_returns_404_for_non_existent_task()
     {
         $response = $this->getJson('/api/tasks/999');
 
         $response->assertStatus(404)
-                 ->assertJson(['error' => 'Task not found']);
+                    ->assertJson(['error' => 'Task not found']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_updates_task_status()
     {
         $task = Task::factory()->create();
+        $completedStatusId = Status::where('status', 'Completed')->first()->id;
 
-        $response = $this->patchJson("/api/tasks/{$task->id}/status", ['status' => 'completed']);
+        $response = $this->patchJson("/api/tasks/{$task->id}/status", ['status_id' => $completedStatusId]);
 
         $response->assertStatus(200)
-                 ->assertJson(['status' => 'completed']);
+                    ->assertJson(['status_id' => $completedStatusId]);
 
-        $this->assertDatabaseHas('tasks', ['id' => $task->id, 'status' => 'completed']);
+        $this->assertDatabaseHas('tasks', ['id' => $task->id, 'status_id' => $completedStatusId]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_validates_status_update()
     {
         $task = Task::factory()->create();
 
-        $response = $this->patchJson("/api/tasks/{$task->id}/status", ['status' => '']);
+        $response = $this->patchJson("/api/tasks/{$task->id}/status", ['status_id' => '']);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['status']);
+                    ->assertJsonValidationErrors(['status_id']);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_deletes_a_task()
     {
         $task = Task::factory()->create();
@@ -104,5 +112,50 @@ class TaskControllerTest extends TestCase
 
         $response->assertStatus(204);
         $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_fails_to_delete_non_existent_task()
+    {
+        $response = $this->deleteJson("/api/tasks/999");
+
+        $response->assertStatus(404)
+                    ->assertJson(['error' => 'Task not found']);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_validates_due_date_format_on_create()
+    {
+        $data = [
+            'title' => 'Invalid Due Date',
+            'description' => 'Test',
+            'status_id' => 1,
+            'due_date' => 'invalid-date'
+        ];
+
+        $response = $this->postJson('/api/tasks', $data);
+
+        $response->assertStatus(422)
+                    ->assertJsonValidationErrors(['due_date']);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function it_can_create_task_without_description()
+    {
+        $data = [
+            'title' => 'Task Without Description',
+            'status_id' => 1,
+            'due_date' => now()->addDays(3)->format('j/n/Y')
+        ];
+
+        $response = $this->postJson('/api/tasks', $data);
+
+        $response->assertStatus(201)
+                    ->assertJson([
+                        'title' => 'Task Without Description',
+                        'description' => null,
+                    ]);
+
+        $this->assertDatabaseHas('tasks', ['title' => 'Task Without Description']);
     }
 }

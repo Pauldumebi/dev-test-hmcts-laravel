@@ -22,7 +22,7 @@ class TaskFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
-            'status' => 'pending', // or any default status
+            'status_id' => 1, // or any default status
             'due_date' => $this->faker->dateTimeBetween('now', '+1 week'), // Example due date
         ];
     }

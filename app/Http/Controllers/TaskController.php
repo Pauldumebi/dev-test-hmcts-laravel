@@ -3,41 +3,27 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use App\Models\Task;
-use Illuminate\Support\Facades\Validator;
+use App\NotFound;
+use App\HTTP\Requests\StoreTaskRequest;
+use App\HTTP\Requests\UpdateTaskRequest;
+use App\Models\status;
+use Exception;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'description' => 'nullable|string',
-            'status' => 'required|string',
-            'due_date' => 'required|date',
-        ]);
-
-        if ($validator->fails()) 
-        {
-            $errors = $validator->errors();
-            $missingFields = $errors->keys();
-            
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $errors,
-                'missing_fields' => $missingFields
-            ], 400);
-        }
-
-        // Convert the due_date to a Carbon instance before saving
-        $dueDate = Carbon::parse($request->due_date);
+        $validated = $request->validated();
 
         $task = Task::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'status' => $request->status ?? 'pending',
-            'due_date' => $dueDate,
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'status_id' => (int)$validated['status_id'],
+            'due_date' => Carbon::createFromFormat('j/n/Y', $validated['due_date'])
+                        ->format('Y-m-d'),
         ]);
 
         return response()->json($task, 201);
@@ -47,37 +33,54 @@ class TaskController extends Controller
     {
         try 
         {
-            $task = Task::findOrFail($id);
+            $task = Task::findOrFail($id)->join('status', 'tasks.status_id', '=', 'status.id')
+                ->select('tasks.*', 'status.status as status')
+                ->first();
+                
             return response()->json($task);
         } 
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) 
+        catch (ModelNotFoundException $e) 
         {
-            return response()->json(['error' => 'Task not found'], 404);
+            Log::error('Task not found', ['id' => $id, 'error' => $e->getMessage()]);
+            return response()->json(['error' => NotFound::TASK_NOT_FOUND], 404);
         }
+    }
+
+    public function getStatuses()
+    {
+        $statuses = status::all();
+
+        if ($statuses->isEmpty()) {
+            return response()->json(['error' => NotFound::STATUS_NOT_FOUND], 404);
+        }
+
+        $mappedStatuses = $statuses->map(function ($status) {
+            return [
+                'value' => $status->id,
+                'text' => $status->status
+            ];
+        });
+
+        $mappedStatuses->prepend([
+            'value'     => '',
+            'text' => 'Please select a status',
+        ]);
+       
+        return response()->json($mappedStatuses->values());
     }
 
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = Task::orderBy('created_at', 'desc')->get()->toArray();
         return response()->json($tasks);
     }
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(UpdateTaskRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'status' => 'required|string', // Status should not be empty
-        ]);
-
-        if ($validator->fails()) 
-        {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $validated = $request->validated();
 
         $task = Task::findOrFail($id);
-        $task->status = $request->status;
+        $task->status_id = $validated['status_id'];
         $task->save();
 
         return response()->json($task);
@@ -92,10 +95,10 @@ class TaskController extends Controller
     
             return response()->json(null, 204);
         } 
-        catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) 
+        catch (ModelNotFoundException $e) 
         {
-            return response()->json(['error' => 'Task not found'], 404);
+            Log::error('Task not found', ['id' => $id, 'error' => $e->getMessage()]);
+            return response()->json(['error' => NotFound::TASK_NOT_FOUND], 404);
         }
-       
     }
 }

@@ -49,7 +49,7 @@ This will start the server, and by default, it will be accessible at ```http://1
 Use the following command to run test cases: ![Sample Result](images/testCases.png)
 
 ```json
-    php artisan test --filter TaskControllerTest
+    php artisan test
 ```
 
 

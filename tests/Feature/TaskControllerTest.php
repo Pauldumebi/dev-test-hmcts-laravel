@@ -130,7 +130,7 @@ class TaskControllerTest extends TestCase
             'title' => 'Invalid Due Date',
             'description' => 'Test',
             'status_id' => 1,
-            'due_date' => 'invalid-date'
+            'due_date' => '41/31/2025'
         ];
 
         $response = $this->postJson('/api/tasks', $data);
@@ -145,7 +145,7 @@ class TaskControllerTest extends TestCase
         $data = [
             'title' => 'Task Without Description',
             'status_id' => 1,
-            'due_date' => now()->addDays(3)->format('j/n/Y')
+            'due_date' => now()->addDays(3)->format('d/m/Y')
         ];
 
         $response = $this->postJson('/api/tasks', $data);

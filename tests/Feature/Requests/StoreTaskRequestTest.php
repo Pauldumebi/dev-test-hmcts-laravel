@@ -23,7 +23,7 @@ class StoreTaskRequestTest extends TestCase
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status_id' => 'required|integer|exists:status,id',
-            'due_date' => 'required|date_format:j/n/Y|after_or_equal:today',
+            'due_date' => ['required', new \App\Rules\DueDateRule],
         ], $request->rules());
     }
 }

@@ -8,7 +8,6 @@ use App\NotFound;
 use App\HTTP\Requests\StoreTaskRequest;
 use App\HTTP\Requests\UpdateTaskRequest;
 use App\Models\status;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -22,7 +21,7 @@ class TaskController extends Controller
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'status_id' => (int)$validated['status_id'],
-            'due_date' => Carbon::createFromFormat('j/n/Y', $validated['due_date'])
+            'due_date' => Carbon::createFromFormat('d/m/Y', $validated['due_date'])
                         ->format('Y-m-d'),
         ]);
 

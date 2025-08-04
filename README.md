@@ -65,8 +65,8 @@ Use the following command to run test cases: ![Sample Result](images/testCases.p
 {
     "title": "Task Title",
     "description": "Task description (optional)",
-    "status": "pending",
-    "due_date": "2025/05/01"
+    "status_id": 2,
+    "due_date": "1/9/2026"
 }
 ```
 
@@ -77,10 +77,10 @@ Use the following command to run test cases: ![Sample Result](images/testCases.p
     "id": 1,
     "title": "Complete report",
     "description": "Finish the monthly report",
-    "status": "pending",
+    "status_id": 1,
     "due_date": "2025-05-01T12:00:00",
     "created_at": "2025-04-27T00:00:00",
-    "updated_at": "2025-04-27T00:00:00"
+    "updated_at": "2025-04-27T00:00:00",
 }
 ```
 
@@ -113,10 +113,11 @@ Use the following command to run test cases: ![Sample Result](images/testCases.p
     "id": 1,
     "title": "Complete report",
     "description": "Finish the monthly report",
-    "status": "pending",
+    "status_id": 1,
     "due_date": "2025-05-01T12:00:00",
     "created_at": "2025-04-27T00:00:00",
-    "updated_at": "2025-04-27T00:00:00"
+    "updated_at": "2025-04-27T00:00:00",
+    "status": "Pending"
 }
 ```
 
@@ -146,7 +147,7 @@ Use the following command to run test cases: ![Sample Result](images/testCases.p
         "id": 1,
         "title": "Complete report",
         "description": "Finish the monthly report",
-        "status": "pending",
+        "status_id": 1,
         "due_date": "2025-05-01T12:00:00",
         "created_at": "2025-04-27T00:00:00",
         "updated_at": "2025-04-27T00:00:00"
@@ -155,7 +156,7 @@ Use the following command to run test cases: ![Sample Result](images/testCases.p
         "id": 2,
         "title": "Prepare presentation",
         "description": "Prepare slides for the team meeting",
-        "status": "in progress",
+        "status_id": 2,
         "due_date": "2025-05-02T09:00:00",
         "created_at": "2025-04-27T00:00:00",
         "updated_at": "2025-04-27T00:00:00"
@@ -184,7 +185,7 @@ Use the following command to run test cases: ![Sample Result](images/testCases.p
 #### Sample Request:
 ```json
 {
-    "status": "completed"
+    "status_id": 2
 }
 ```
 
@@ -195,7 +196,7 @@ Use the following command to run test cases: ![Sample Result](images/testCases.p
     "id": 1,
     "title": "Complete report",
     "description": "Finish the monthly report",
-    "status": "completed",
+    "status_id": 2,
     "due_date": "2025-05-01T12:00:00",
     "created_at": "2025-04-27T00:00:00",
     "updated_at": "2025-04-27T00:00:00"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\DueDateRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -27,11 +28,11 @@ class StoreTaskRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'status_id' => 'required|integer|exists:status,id',
-            'due_date' => 'required|date_format:j/n/Y|after_or_equal:today',
+            'due_date' => ['required', new DueDateRule],
         ];
     }
 
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator): void
     {
         $errors = $validator->errors()->toArray();
         $missingFields = array_keys($validator->failed());

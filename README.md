@@ -19,12 +19,22 @@ Open the .env file and configure database to be sqlite (This comes default check
 
 
 ## Run Migrations
-If your application uses a database, you may need to run the migrations to set up your database schema:
+You need to run the migrations to set up the database schema:
 
 ```json
     php artisan migrate
 ```
 This will set up the required tables.
+migration - ![Sample Result](images/runningMigrations.png)
+
+## Run Seeders
+To populate the tables with existing data for example the status table you need to run this command
+
+```json
+    php artisan db:seed
+```
+A quick check in the database to ensure all tables have been populated
+seeders - ![Sample Result](images/runningSeeders.png)
 
 ## Serve the Application
 Start the Laravel application server using the following command:

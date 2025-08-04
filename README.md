@@ -65,7 +65,7 @@ Use the following command to run test cases: ![Sample Result](images/testCases.p
 {
     "title": "Task Title",
     "description": "Task description (optional)",
-    "status_id": 2,
+    "status_id": 1,
     "due_date": "1/9/2026"
 }
 ```
